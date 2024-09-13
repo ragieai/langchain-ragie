@@ -51,3 +51,7 @@ response = chain.invoke("Should the United States contain China?")
 print(response)
 
 ```
+
+## License
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
