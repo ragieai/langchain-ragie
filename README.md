@@ -10,7 +10,7 @@ pip install langchain-ragie
 
 ## Usage
 
-If you need asyncio, see [this example.](https://github.com/ragieai/langchain-ragie/blob/main/tests/aintegration.py).
+If you need asyncio, see [this example.](https://github.com/ragieai/langchain-ragie/blob/main/examples/async.py).
 
 ```python
 import os
@@ -34,6 +34,7 @@ retriever = langchain_ragie.RagieRetriever(api_key=os.getenv("RAGIE_API_KEY"))
 
 
 def format_docs(docs):
+    print(docs)
     return "\n\n".join([d.page_content for d in docs])
 
 
