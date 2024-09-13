@@ -15,12 +15,11 @@ Question: {question}
 """
 prompt = ChatPromptTemplate.from_template(template)
 model = ChatOpenAI()
-retriever = langchain_ragie.RagieRetriever(
-    api_key=os.getenv("RAGIE_API_KEY"), filter={"type": "Book"}, rerank=False
-)
+retriever = langchain_ragie.RagieRetriever(api_key=os.getenv("RAGIE_API_KEY"))
 
 
 def format_docs(docs):
+    print(docs)
     return "\n\n".join([d.page_content for d in docs])
 
 
@@ -31,6 +30,6 @@ chain = (
     | StrOutputParser()
 )
 
-response = chain.invoke("Should the United States contain China?")
+response = chain.invoke("What do the besties think about Davos?")
 
 print(response)

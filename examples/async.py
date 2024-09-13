@@ -30,7 +30,7 @@ Question: {question}
         | model
         | StrOutputParser()
     )
-    response = await chain.ainvoke("Should the United States contain China?")
+    response = await chain.ainvoke("What do the besties think about Davos?")
 
     print(response)
 
