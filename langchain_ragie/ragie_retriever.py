@@ -1,11 +1,13 @@
 from typing import Annotated, Any, Dict, List, Optional
+
+from langchain_core.pydantic_v1 import Field, SecretStr
 from langchain_core.callbacks.manager import (
     AsyncCallbackManagerForRetrieverRun,
     CallbackManagerForRetrieverRun,
 )
 from langchain_core.documents import Document
 from langchain_core.retrievers import BaseRetriever
-import pydantic
+from langchain_core.utils import secret_from_env
 from ragie import Ragie, RetrieveParams
 
 
@@ -21,11 +23,18 @@ def _to_documents(retrieval) -> List[Document]:
 
 
 class RagieRetriever(BaseRetriever):
-    api_key: str
-    r"""The API key for Ragie."""
+    api_key: SecretStr = Field(
+        default_factory=secret_from_env(
+            "RAGIE_API_KEY",
+            error_message="Ragie API key not found. Please set the RAGIE_API_KEY "
+            "environment variable or pass it via `api_key`.",
+        ),
+        alias="api_key",
+    )
+    """Ragie API key."""
     top_k: Optional[int]
     r"""The maximum number of chunks to return. Defaults to 8."""
-    filter: Annotated[Optional[Dict[str, Any]], pydantic.Field(alias="filter")]
+    filter: Annotated[Optional[Dict[str, Any]], Field(alias="filter")]
     r"""The metadata search filter on documents. Returns chunks only from documents which match the filter. The following filter operators are supported: $eq - Equal to (number, string, boolean), $ne - Not equal to (number, string, boolean), $gt - Greater than (number), $gte - Greater than or equal to (number), $lt - Less than (number), $lte - Less than or equal to (number), $in - In array (string or number), $nin - Not in array (string or number). The operators can be combined with AND and OR. Read [Metadata & Filters guide](https://docs.ragie.ai/docs/metadata-filters) for more details and examples."""
     rerank: Optional[bool]
     r"""Reranks the chunks for semantic relevancy post cosine similarity. Will be slower but returns a subset of highly relevant chunks. Best for reducing hallucinations and improving accuracy for LLM generation."""
@@ -44,16 +53,19 @@ class RagieRetriever(BaseRetriever):
             kwargs["max_chunks_per_document"] = self.max_chunks_per_document
         return RetrieveParams(**(kwargs | {"query": query}))
 
+    def _get_client(self) -> Ragie:
+        return Ragie(self.api_key.get_secret_value())
+
     def _get_relevant_documents(
         self, query: str, *, run_manager: CallbackManagerForRetrieverRun
     ) -> List[Document]:
-        client = Ragie(self.api_key)
+        client = self._get_client()
         retrieval = client.retrievals.retrieve(request=self._to_retrieve_params(query))
         return _to_documents(retrieval)
 
     async def _aget_relevant_documents(
         self, query: str, *, run_manager: AsyncCallbackManagerForRetrieverRun
     ) -> List[Document]:
-        client = Ragie(self.api_key)
+        client = self._get_client()
         retrieval = await client.retrievals.retrieve_async(request={"query": query})
         return _to_documents(retrieval)

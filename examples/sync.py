@@ -1,5 +1,3 @@
-import os
-
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
@@ -15,11 +13,10 @@ Question: {question}
 """
 prompt = ChatPromptTemplate.from_template(template)
 model = ChatOpenAI()
-retriever = langchain_ragie.RagieRetriever(api_key=os.getenv("RAGIE_API_KEY"))
+retriever = langchain_ragie.RagieRetriever()
 
 
 def format_docs(docs):
-    print(docs)
     return "\n\n".join([d.page_content for d in docs])
 
 
