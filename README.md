@@ -1,6 +1,6 @@
 # langchain-ragie
 
-This is a langchain integration for Ragie (https://ragie.ai)
+Ragie (https://ragie.ai) integration for LangChain
 
 ## Install
 
