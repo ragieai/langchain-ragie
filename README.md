@@ -4,9 +4,13 @@ This is a langchain integration for Ragie (https://ragie.ai)
 
 ## Install
 
-`pip install langchain-ragie`
+```bash
+pip install langchain-ragie
+```
 
 ## Usage
+
+If you need asyncio, see [this example.](https://github.com/ragieai/langchain-ragie/blob/main/tests/aintegration.py).
 
 ```python
 import os
