@@ -12,6 +12,7 @@ ragie = "^1.0.1"
 
 [tool.poetry.group.dev.dependencies]
 langchain-openai = "^0.1.23"
+ruff = "^0.6.5"
 
 [build-system]
 requires = ["poetry-core"]
