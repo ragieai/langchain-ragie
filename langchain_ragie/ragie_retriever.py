@@ -1,6 +1,6 @@
 from typing import Annotated, Any, Dict, List, Optional
 
-from langchain_core.pydantic_v1 import Field, SecretStr
+from pydantic import Field, SecretStr
 from langchain_core.callbacks.manager import (
     AsyncCallbackManagerForRetrieverRun,
     CallbackManagerForRetrieverRun,
@@ -32,13 +32,13 @@ class RagieRetriever(BaseRetriever):
         alias="api_key",
     )
     """Ragie API key."""
-    top_k: Optional[int]
+    top_k: Optional[int] = None
     r"""The maximum number of chunks to return. Defaults to 8."""
-    filter: Annotated[Optional[Dict[str, Any]], Field(alias="filter")]
+    filter: Annotated[Optional[Dict[str, Any]], Field(alias="filter")] = None
     r"""The metadata search filter on documents. Returns chunks only from documents which match the filter. The following filter operators are supported: $eq - Equal to (number, string, boolean), $ne - Not equal to (number, string, boolean), $gt - Greater than (number), $gte - Greater than or equal to (number), $lt - Less than (number), $lte - Less than or equal to (number), $in - In array (string or number), $nin - Not in array (string or number). The operators can be combined with AND and OR. Read [Metadata & Filters guide](https://docs.ragie.ai/docs/metadata-filters) for more details and examples."""
-    rerank: Optional[bool]
+    rerank: Optional[bool] = None
     r"""Reranks the chunks for semantic relevancy post cosine similarity. Will be slower but returns a subset of highly relevant chunks. Best for reducing hallucinations and improving accuracy for LLM generation."""
-    max_chunks_per_document: Optional[int]
+    max_chunks_per_document: Optional[int] = None
     r"""Maximum number of chunks to retrieve per document. Use this to increase the number of documents the final chunks are retreived from. This feature is in beta and may change in the future."""
 
     def _to_retrieve_params(self, query: str) -> RetrieveParams:
